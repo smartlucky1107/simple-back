@@ -4,6 +4,7 @@ const driverController = require("../../controllers/driverController");
 
 router.get("/", driverController.driver_index);
 router.post("/create", driverController.driver_create);
+router.put('/:id', driverController.driver_update);
 
 router.get("/:id", driverController.driver_getOne);
 

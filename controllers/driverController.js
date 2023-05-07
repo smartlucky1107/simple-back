@@ -45,6 +45,17 @@ const driver_getOne = async (req, res) => {
     });
 }
 
+
+const driver_update = (req, res) => {
+    User.findByIdAndUpdate(req.params.id, req.body)
+        .then(function () {
+            res.json("Driver updated");
+        })
+        .catch(function (err) {
+            res.status(422).send("Driver update failed.");
+        });
+};
+
 // Delete driver Detail by Id
 const driver_delete = (req, res) => {
     Driver.findById(req.params.id, function (err, driver) {
@@ -87,4 +98,5 @@ module.exports = {
     driver_getOne,
     driver_delete,
     driver_approve,
+    driver_update
 };
