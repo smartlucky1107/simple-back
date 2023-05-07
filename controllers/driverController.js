@@ -6,6 +6,12 @@ const hashPassword = require("../utils/common.utils");
 // Display All driver Data
 const driver_index = (req, res) => {
     Driver.find(function (err, drivers) {
+        if (req.params.search) {
+            drivers = drivers.filter(item => (item.firstname + item.lastname + item.numberPlate + item.VIN).includes(req.params.search));
+        }
+        if (req.params.approved) {
+            drivers = drivers.filter(item => (item.approved == req.params.approved));
+        }
         res.json(drivers);
     });
 };
@@ -56,9 +62,29 @@ const driver_delete = (req, res) => {
     });
 };
 
+const driver_approve = (req, res) => {
+    Driver.findById(req.params.id, async function (err, driver) {
+        if (!driver) {
+            res.status(404).send("Driver not found");
+        } else {
+            driver.approved = !driver.approved;
+            await driver
+                .save()
+                .then((driver) => {
+                    res.send(driver);
+                })
+                .catch(function (err) {
+                    res.status(422).send("driver approve change failed");
+                });
+
+        }
+    })
+}
+
 module.exports = {
     driver_index,
     driver_create,
     driver_getOne,
-    driver_delete
+    driver_delete,
+    driver_approve,
 };
