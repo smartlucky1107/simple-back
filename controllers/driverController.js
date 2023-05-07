@@ -9,8 +9,8 @@ const driver_index = (req, res) => {
         if (req.params.search) {
             drivers = drivers.filter(item => (item.firstname + item.lastname + item.numberPlate + item.VIN).includes(req.params.search));
         }
-        if (req.params.approved) {
-            drivers = drivers.filter(item => (item.approved == req.params.approved));
+        if (req.params.status) {
+            drivers = drivers.filter(item => (item.approved == (req.params.status == "approved" ? true : false)));
         }
         res.json(drivers);
     });
