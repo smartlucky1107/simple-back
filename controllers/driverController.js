@@ -6,11 +6,11 @@ const hashPassword = require("../utils/common.utils");
 // Display All driver Data
 const driver_index = (req, res) => {
     Driver.find(function (err, drivers) {
-        if (req.params.search) {
-            drivers = drivers.filter(item => (item.firstname + item.lastname + item.numberPlate + item.VIN).includes(req.params.search));
+        if (req.query.search) {
+            drivers = drivers.filter(item => (item.firstname + item.lastname + item.numberPlate + item.VIN).includes(req.query.search));
         }
-        if (req.params.status) {
-            drivers = drivers.filter(item => (item.approved == (req.params.status == "approved" ? true : false)));
+        if (req.query.status) {
+            drivers = drivers.filter(item => (item.approved == (req.query.status == "approved" ? true : false)));
         }
         res.json(drivers);
     });
