@@ -46,14 +46,42 @@ const driver_getOne = async (req, res) => {
 }
 
 
-const driver_update = (req, res) => {
-    User.findByIdAndUpdate(req.params.id, req.body)
-        .then(function () {
-            res.json("Driver updated");
+const driver_update = async (req, res) => {
+
+    if (req.body.resetPassword) {
+        await hashPassword(req);
+        await Driver.findByIdAndUpdate(req.params.id, req.body)
+            .then(function (driver) {
+                res.json("Driver updated");
+            })
+            .catch(function (err) {
+                res.status(422).send("Driver update failed.");
+            });
+    } else {
+        await Driver.findById(req.params.id, async function (err, driver) {
+            if (driver) {
+                driver.firstname = req.body.firstname;
+                driver.lastname = req.body.lastname;
+                driver.email = req.body.email;
+                driver.phone = req.body.phone;
+                driver.year = req.body.year;
+                driver.numberPlate = req.body.numberPlate;
+                driver.VIN = req.body.VIN;
+                driver.approved = req.body.approved;
+                await driver
+                    .save()
+                    .then((driver) => {
+                        res.send(driver);
+                    })
+                    .catch(function (err) {
+                        res.status(422).send("driver update failed");
+                    });
+
+            } else {
+                res.status(404).send("Driver not found");
+            }
         })
-        .catch(function (err) {
-            res.status(422).send("Driver update failed.");
-        });
+    }
 };
 
 // Delete driver Detail by Id
