@@ -49,6 +49,7 @@ const driver_getOne = async (req, res) => {
 const driver_update = async (req, res) => {
 
     if (req.body.resetPassword) {
+        console.log('sdfsdf');
         await hashPassword(req);
         await Driver.findByIdAndUpdate(req.params.id, req.body)
             .then(function (driver) {
@@ -58,7 +59,8 @@ const driver_update = async (req, res) => {
                 res.status(422).send("Driver update failed.");
             });
     } else {
-        await Driver.findById(req.params.id, async function (err, driver) {
+        console.log('reset');
+        Driver.findById(req.params.id, async function (err, driver) {
             if (driver) {
                 driver.firstname = req.body.firstname;
                 driver.lastname = req.body.lastname;
