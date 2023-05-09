@@ -3,8 +3,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const hashPassword = require("../utils/common.utils");
 
+const DIR = './public/';
 // Display All driver Data
 const driver_index = (req, res) => {
+
     Driver.find(function (err, drivers) {
         if (req.query.search) {
             drivers = drivers.filter(item => (item.firstname + item.lastname + item.numberPlate + item.VIN).includes(req.query.search));
@@ -18,12 +20,20 @@ const driver_index = (req, res) => {
 
 // Create New driver
 const driver_create = async (req, res) => {
+    const reqLicensePhotos = [];
+    const url = req.protocol + '://' + req.get('host');
+
+
+    for (var i = 0; i < req.files.licensePhoto.length; i++) {
+        reqLicensePhotos.push(url + '/public/' + req.files.licensePhoto[i].filename)
+    }
+    reqAvatar = url + '/public/' + req.files.avatar[0].filename;
+    req.body.licensePhoto = reqLicensePhotos;
+    req.body.avatar = reqAvatar;
     await Driver.deleteOne({ email: req.body.email }).then(function () {
         console.log('deleted');
     });
-
     await hashPassword(req);
-
     let driver = await new Driver(req.body);
     await driver
         .save()
@@ -31,6 +41,7 @@ const driver_create = async (req, res) => {
             res.send(driver);
         })
         .catch(function (err) {
+            console.log(err);
             res.status(422).send("driver add failed");
         });
 };
@@ -49,7 +60,6 @@ const driver_getOne = async (req, res) => {
 const driver_update = async (req, res) => {
 
     if (req.body.resetPassword) {
-        console.log('sdfsdf');
         await hashPassword(req);
         await Driver.findByIdAndUpdate(req.params.id, req.body)
             .then(function (driver) {
@@ -59,7 +69,6 @@ const driver_update = async (req, res) => {
                 res.status(422).send("Driver update failed.");
             });
     } else {
-        console.log('reset');
         Driver.findById(req.params.id, async function (err, driver) {
             if (driver) {
                 driver.firstname = req.body.firstname;

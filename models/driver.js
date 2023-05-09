@@ -8,6 +8,15 @@ const DriverSchema = new mongoose.Schema({
     lastname: {
         type: String
     },
+    role: {
+        type: String,
+    },
+    avatar: {
+        type: String
+    },
+    birthDate: {
+        type: Date,
+    },
     email: {
         type: String
     },
@@ -15,6 +24,36 @@ const DriverSchema = new mongoose.Schema({
         type: String,
     },
     phone: {
+        type: String
+    },
+    licenseNumber: {
+        type: String,
+    },
+    expireDate: {
+        type: Date
+    },
+    cardNumber: {
+        type: String,
+    },
+    publishedDate: {
+        type: Date
+    },
+    licenseClass: {
+        type: String
+    },
+    licenseState: {
+        type: String,
+    },
+    licensePhoto: {
+        type: Array
+    },
+    insurances: {
+        type: String
+    },
+    workCompensation: {
+        type: String
+    },
+    truckRegistration: {
         type: String
     },
     year: {
